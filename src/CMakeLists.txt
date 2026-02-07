@@ -5,6 +5,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})
 add_executable(windfall
     main.cpp
 
+    system/config.cpp
+    system/launch.cpp
     system/modal.cpp
 )
 target_compile_features(windfall PUBLIC cxx_std_23)

@@ -1,0 +1,9 @@
+# Extensions
+*.dll
+*.exe
+
+# Directories
+build/
+
+# Editor
+.vscode/

@@ -4,5 +4,14 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})
 # Target: windfall
 add_executable(windfall
     main.cpp
+
+    system/modal.cpp
 )
 target_compile_features(windfall PUBLIC cxx_std_23)
+target_include_directories(windfall
+    PUBLIC
+        ${PATH_TO_SDL2}/include
+        ${PROJECT_SOURCE_DIR}/src
+)
+target_link_directories(windfall PUBLIC ${PATH_TO_SDL2}/lib)
+target_link_libraries(windfall PUBLIC ${SDL2_LIBS})

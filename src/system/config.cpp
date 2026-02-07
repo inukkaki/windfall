@@ -1,5 +1,7 @@
 #include "system/config.h"
 
+#include "system/assert.h"
+
 namespace windfall::system::config {
 
 namespace {
@@ -18,7 +20,7 @@ float GetWindowScale()
 
 void SetWindowScale(float window_scale)
 {
-    // TODO: Assert window_scale > 0.0f
+    INUK_ASSERT(window_scale > 0.0f);
     gWindowScale = window_scale;
     gWindowWidth = static_cast<int>(kWindowBaseWidth*gWindowScale);
     gWindowHeight = static_cast<int>(kWindowBaseHeight*gWindowScale);

@@ -5,6 +5,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})
 add_executable(windfall
     main.cpp
 
+    system/assert.cpp
     system/config.cpp
     system/launch.cpp
     system/modal.cpp
@@ -17,3 +18,4 @@ target_include_directories(windfall
 )
 target_link_directories(windfall PUBLIC ${PATH_TO_SDL2}/lib)
 target_link_libraries(windfall PUBLIC ${SDL2_LIBS})
+target_compile_definitions(windfall PUBLIC USE_ASSERT_IN_GUI)

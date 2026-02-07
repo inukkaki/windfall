@@ -4,6 +4,7 @@
 
 // DEBUG
 #include "system/modal.h"
+#include "system/assert.h"
 
 namespace impl {
 
@@ -13,6 +14,9 @@ namespace launch = windfall::system::launch;
 
 int main(int argc, char* argv[])
 {
+    // DEBUG
+    //INUK_ASSERT(0 == 1);
+
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;
 

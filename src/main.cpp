@@ -2,9 +2,12 @@
 
 #include "system/launch.h"
 
+#if (defined(__WIN32) || defined(__WIN64))
+    #include "system/winfunc.h"
+#endif
+
 // DEBUG
 #include "system/modal.h"
-#include "system/assert.h"
 
 namespace impl {
 
@@ -14,8 +17,10 @@ namespace launch = windfall::system::launch;
 
 int main(int argc, char* argv[])
 {
-    // DEBUG
-    //INUK_ASSERT(0 == 1);
+    // Resolve the blurriness of the screen
+    #if (defined(__WIN32) || defined(__WIN64))
+        windfall::system::winfunc::ResolveBlurriness();
+    #endif
 
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;

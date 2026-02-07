@@ -5,7 +5,7 @@ namespace windfall::system::config {
 
 inline constexpr char kTitle[] = "windfall";
 
-inline constexpr float kDefaultWindowScale = 1.0f;
+inline constexpr float kDefaultWindowScale = 2.0f;
 
 inline constexpr int kWindowBaseWidth = 480;
 inline constexpr int kWindowBaseHeight = 360;

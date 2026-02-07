@@ -9,6 +9,7 @@ add_executable(windfall
     system/config.cpp
     system/launch.cpp
     system/modal.cpp
+    system/winfunc.cpp
 )
 target_compile_features(windfall PUBLIC cxx_std_23)
 target_include_directories(windfall

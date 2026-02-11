@@ -6,6 +6,7 @@ add_executable(windfall
     main.cpp
 
     interface/keyboard.cpp
+    interface/mouse.cpp
 
     routine/debug.cpp
     routine/event.cpp

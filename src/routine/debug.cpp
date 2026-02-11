@@ -5,6 +5,7 @@
 #include "SDL2/SDL.h"
 
 #include "interface/keyboard.h"
+#include "interface/mouse.h"
 #include "routine/event.h"
 #include "system/config.h"
 #include "time/framerate.h"
@@ -14,6 +15,7 @@ namespace windfall::routine::debug {
 namespace impl {
 
 namespace kbd = windfall::interface::keyboard;
+namespace mouse = windfall::interface::mouse;
 namespace revent = windfall::routine::event;
 namespace config = windfall::system::config;
 namespace framerate = windfall::time::framerate;
@@ -22,8 +24,9 @@ namespace framerate = windfall::time::framerate;
 
 void DebugRoutine(SDL_Window* window, SDL_Renderer* renderer)
 {
-    // Keyboard
+    // Keyboard & mouse
     impl::kbd::Keyboard kbd;
+    impl::mouse::Mouse mouse;
 
     // Frame rate
     impl::framerate::FrameRateAdjuster fra(impl::config::GetFrameRate());
@@ -34,21 +37,25 @@ void DebugRoutine(SDL_Window* window, SDL_Renderer* renderer)
     bool quits = false;
     while (!quits) {
         // Handle events
-        quits = impl::revent::HandleEvents(kbd);
+        quits = impl::revent::HandleEvents(kbd, mouse);
 
         // DEBUG
-        if (kbd.Presses(impl::kbd::KeyCode::kLeft)) {
+        //std::cout << "x:" << mouse.x() << " y:" << mouse.y()
+        //          << " dx:" << mouse.dx() << " dy:" << mouse.dy()
+        //          << " scrolls:" << mouse.scrolls() << std::endl;
+        if (mouse.Presses(impl::mouse::ButtonCode::kLeft)) {
             std::cout << "L" << std::endl;
         }
-        if (kbd.Pressing(impl::kbd::KeyCode::kRight)) {
+        if (mouse.Pressing(impl::mouse::ButtonCode::kRight)) {
             std::cout << "R" << std::endl;
         }
-        if (kbd.Releases(impl::kbd::KeyCode::kDown)) {
-            std::cout << "D" << std::endl;
+        if (mouse.Releases(impl::mouse::ButtonCode::kMiddle)) {
+            std::cout << "M" << std::endl;
         }
 
-        // Keyboard
+        // Keyboard & mouse
         kbd.Update();
+        mouse.Update();
 
         // Frame rate
         if (frm.MeasureFrameRate(measured_frame_rate)) {

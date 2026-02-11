@@ -38,8 +38,12 @@ int main(int argc, char* argv[])
         //windfall::system::config::SetFrameRate(30);
         windfall::time::framerate::FrameRateAdjuster fra(
             windfall::system::config::GetFrameRate());
+        windfall::time::framerate::FrameRateMeasurer frm;
+        double measured_frame_rate = 0.0;
         while (timer.GetElapsedTime() < 5000) {
-            std::cout << timer.GetElapsedTime() << std::endl;
+            if (frm.MeasureFrameRate(measured_frame_rate)) {
+                std::cout << measured_frame_rate << " fps" << std::endl;
+            }
             fra.Adjust();
         }
         windfall::system::modal::ShowErrorMessage("main", "succeeded in init");

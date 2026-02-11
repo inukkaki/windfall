@@ -39,4 +39,29 @@ void FrameRateAdjuster::Adjust()
     SetTimer();
 }
 
+void FrameRateMeasurer::SetTimer()
+{
+    timer_.Set();
+}
+
+namespace {
+
+constexpr uint64_t kMeasuringPeriod = 1000ull;  // ms
+
+}  // namespace
+
+bool FrameRateMeasurer::MeasureFrameRate(double& measured_frame_rate)
+{
+    bool measures = false;
+    ++elapsed_frames_;
+    uint64_t elapsed_time = timer_.GetElapsedTime();
+    if (elapsed_time > kMeasuringPeriod) {
+        measures = true;
+        measured_frame_rate = 1000*elapsed_frames_/elapsed_time;
+        elapsed_frames_ = 0;
+        timer_.Set();
+    }
+    return measures;
+}
+
 }  // namespace windfall::time::framerate

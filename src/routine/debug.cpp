@@ -4,6 +4,7 @@
 
 #include "SDL2/SDL.h"
 
+#include "interface/keyboard.h"
 #include "routine/event.h"
 #include "system/config.h"
 #include "time/framerate.h"
@@ -12,6 +13,7 @@ namespace windfall::routine::debug {
 
 namespace impl {
 
+namespace kbd = windfall::interface::keyboard;
 namespace revent = windfall::routine::event;
 namespace config = windfall::system::config;
 namespace framerate = windfall::time::framerate;
@@ -20,6 +22,9 @@ namespace framerate = windfall::time::framerate;
 
 void DebugRoutine(SDL_Window* window, SDL_Renderer* renderer)
 {
+    // Keyboard
+    impl::kbd::Keyboard kbd;
+
     // Frame rate
     impl::framerate::FrameRateAdjuster fra(impl::config::GetFrameRate());
     impl::framerate::FrameRateMeasurer frm;
@@ -29,7 +34,21 @@ void DebugRoutine(SDL_Window* window, SDL_Renderer* renderer)
     bool quits = false;
     while (!quits) {
         // Handle events
-        quits = impl::revent::HandleEvents();
+        quits = impl::revent::HandleEvents(kbd);
+
+        // DEBUG
+        if (kbd.Presses(impl::kbd::KeyCode::kLeft)) {
+            std::cout << "L" << std::endl;
+        }
+        if (kbd.Pressing(impl::kbd::KeyCode::kRight)) {
+            std::cout << "R" << std::endl;
+        }
+        if (kbd.Releases(impl::kbd::KeyCode::kDown)) {
+            std::cout << "D" << std::endl;
+        }
+
+        // Keyboard
+        kbd.Update();
 
         // Frame rate
         if (frm.MeasureFrameRate(measured_frame_rate)) {

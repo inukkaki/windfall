@@ -11,6 +11,7 @@ add_executable(windfall
     system/modal.cpp
     system/winfunc.cpp
 
+    time/framerate.cpp
     time/timer.cpp
 )
 target_compile_features(windfall PUBLIC cxx_std_23)

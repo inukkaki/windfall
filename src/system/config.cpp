@@ -11,6 +11,8 @@ float gWindowScale = kDefaultWindowScale;
 int gWindowWidth = static_cast<int>(kWindowBaseWidth*gWindowScale);
 int gWindowHeight = static_cast<int>(kWindowBaseHeight*gWindowScale);
 
+int gFrameRate = kDefaultFrameRate;  // s-1
+
 }  // namespace
 
 float GetWindowScale()
@@ -34,6 +36,17 @@ int GetWindowWidth()
 int GetWindowHeight()
 {
     return gWindowHeight;
+}
+
+int GetFrameRate()
+{
+    return gFrameRate;
+}
+
+void SetFrameRate(int frame_rate)
+{
+    INUK_ASSERT(frame_rate > 0);
+    gFrameRate = frame_rate;
 }
 
 }  // namespace windfall::system::config

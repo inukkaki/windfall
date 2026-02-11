@@ -9,6 +9,8 @@
 // DEBUG
 #include "system/modal.h"
 #include "time/timer.h"
+#include "time/framerate.h"
+#include "system/config.h"
 #include <iostream>
 
 namespace impl {
@@ -33,8 +35,12 @@ int main(int argc, char* argv[])
         // DEBUG
         windfall::time::timer::SimpleTimer timer;
         timer.Set();
-        while (timer.GetElapsedTime() < 1000) {
+        //windfall::system::config::SetFrameRate(30);
+        windfall::time::framerate::FrameRateAdjuster fra(
+            windfall::system::config::GetFrameRate());
+        while (timer.GetElapsedTime() < 5000) {
             std::cout << timer.GetElapsedTime() << std::endl;
+            fra.Adjust();
         }
         windfall::system::modal::ShowErrorMessage("main", "succeeded in init");
     }

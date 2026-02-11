@@ -8,6 +8,8 @@
 
 // DEBUG
 #include "system/modal.h"
+#include "time/timer.h"
+#include <iostream>
 
 namespace impl {
 
@@ -29,6 +31,11 @@ int main(int argc, char* argv[])
 
     if (initializes_gui) {
         // DEBUG
+        windfall::time::timer::SimpleTimer timer;
+        timer.Set();
+        while (timer.GetElapsedTime() < 1000) {
+            std::cout << timer.GetElapsedTime() << std::endl;
+        }
         windfall::system::modal::ShowErrorMessage("main", "succeeded in init");
     }
 

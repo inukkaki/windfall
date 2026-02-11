@@ -8,6 +8,10 @@
 
 // DEBUG
 #include "system/modal.h"
+#include "time/timer.h"
+#include "time/framerate.h"
+#include "system/config.h"
+#include <iostream>
 
 namespace impl {
 
@@ -29,6 +33,19 @@ int main(int argc, char* argv[])
 
     if (initializes_gui) {
         // DEBUG
+        windfall::time::timer::SimpleTimer timer;
+        timer.Set();
+        //windfall::system::config::SetFrameRate(30);
+        windfall::time::framerate::FrameRateAdjuster fra(
+            windfall::system::config::GetFrameRate());
+        windfall::time::framerate::FrameRateMeasurer frm;
+        double measured_frame_rate = 0.0;
+        while (timer.GetElapsedTime() < 5000) {
+            if (frm.MeasureFrameRate(measured_frame_rate)) {
+                std::cout << measured_frame_rate << " fps" << std::endl;
+            }
+            fra.Adjust();
+        }
         windfall::system::modal::ShowErrorMessage("main", "succeeded in init");
     }
 

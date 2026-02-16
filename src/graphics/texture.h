@@ -5,7 +5,15 @@
 
 #include "SDL2/SDL.h"
 
+#include "math/vector.h"
+
 namespace windfall::graphics::texture {
+
+namespace impl {
+
+namespace vector = windfall::math::vector;
+
+}  // namespace impl
 
 struct RenderRect {
     int x;
@@ -50,6 +58,10 @@ public:
     void DrawLine(float x1, float y1, float x2, float y2) const;
     void DrawRect(float x, float y, float w, float h) const;
     void FillRect(float x, float y, float w, float h) const;
+
+    void DrawVector(
+        const impl::vector::Vector2D& v,
+        const impl::vector::Vector2D& offset) const;
 
 private:
     SDL_Renderer* renderer_;

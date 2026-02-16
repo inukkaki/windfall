@@ -7,6 +7,7 @@
 #include "graphics/texture.h"
 #include "interface/keyboard.h"
 #include "interface/mouse.h"
+#include "math/vector.h"
 #include "routine/event.h"
 #include "system/config.h"
 #include "time/framerate.h"
@@ -18,6 +19,7 @@ namespace impl {
 namespace texture = windfall::graphics::texture;
 namespace kbd = windfall::interface::keyboard;
 namespace mouse = windfall::interface::mouse;
+namespace vector = windfall::math::vector;
 namespace revent = windfall::routine::event;
 namespace config = windfall::system::config;
 namespace framerate = windfall::time::framerate;
@@ -42,6 +44,11 @@ void DebugRoutine(SDL_Window* window, SDL_Renderer* renderer)
     texture.DrawPoint(317, 3);
     texture.SetDrawColor(0xff, 0xff, 0x00, 0x4f);
     texture.FillRect(20, 120, 120, 80);
+
+    impl::vector::Vector2D vec(5, 10);
+    impl::vector::Vector2D offset_vec(30, 50);
+    texture.SetDrawColor(0xff, 0x00, 0x00, 0xff);
+    texture.DrawVector(vec, offset_vec);
 
     impl::texture::RenderRect src1(0, 0, 320, 240);
     texture.Render(nullptr, src1, 1.5f, 1.4f);

@@ -4,12 +4,14 @@
 
 #include "SDL2/SDL.h"
 
+#include "math/vector.h"
 #include "system/modal.h"
 
 namespace windfall::graphics::texture {
 
 namespace impl {
 
+namespace vector = windfall::math::vector;
 namespace modal = windfall::system::modal;
 
 }  // namespace impl
@@ -127,6 +129,14 @@ void Texture::FillRect(float x, float y, float w, float h) const
         SDL_FRect rect = {x, y, w, h};
         SDL_RenderFillRectF(renderer_, &rect);
     }
+}
+
+void Texture::DrawVector(
+    const impl::vector::Vector2D& v,
+    const impl::vector::Vector2D& offset) const
+{
+    impl::vector::Vector2D end = v + offset;
+    DrawLine(offset.x, offset.y, end.x, end.y);
 }
 
 }  // namespace windfall::graphics::texture

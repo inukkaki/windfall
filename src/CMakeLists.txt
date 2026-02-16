@@ -5,6 +5,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})
 add_executable(windfall
     main.cpp
 
+    graphics/texture.cpp
+
     interface/keyboard.cpp
     interface/mouse.cpp
 

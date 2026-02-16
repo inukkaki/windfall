@@ -11,7 +11,8 @@ float gWindowScale = kDefaultWindowScale;
 int gWindowWidth = static_cast<int>(kWindowBaseWidth*gWindowScale);
 int gWindowHeight = static_cast<int>(kWindowBaseHeight*gWindowScale);
 
-int gFrameRate = kDefaultFrameRate;  // s-1
+int gFrameRate = kDefaultFrameRate;      // s-1
+float gFrameDuration = 1.0f/gFrameRate;  // s
 
 }  // namespace
 
@@ -47,6 +48,12 @@ void SetFrameRate(int frame_rate)
 {
     INUK_ASSERT(frame_rate > 0);
     gFrameRate = frame_rate;
+    gFrameDuration = 1.0f/gFrameRate;
+}
+
+float GetFrameDuration()
+{
+    return gFrameDuration;
 }
 
 bool EqualsZero(float x)

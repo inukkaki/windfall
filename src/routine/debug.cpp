@@ -4,6 +4,7 @@
 
 #include "SDL2/SDL.h"
 
+#include "entity/base.h"
 #include "graphics/texture.h"
 #include "interface/keyboard.h"
 #include "interface/mouse.h"
@@ -16,6 +17,7 @@ namespace windfall::routine::debug {
 
 namespace impl {
 
+namespace ebase = windfall::entity::base;
 namespace texture = windfall::graphics::texture;
 namespace kbd = windfall::interface::keyboard;
 namespace mouse = windfall::interface::mouse;
@@ -30,35 +32,21 @@ void DebugRoutine(SDL_Window* window, SDL_Renderer* renderer)
 {
     // Graphics
     SDL_SetRenderTarget(renderer, nullptr);
-    SDL_SetRenderDrawColor(renderer, 0x1f, 0x3f, 0x6f, 0xff);
+    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff);
     SDL_RenderClear(renderer);
 
     impl::texture::Texture texture(renderer);
-    texture.CreateTexture(320, 240);
-    texture.Clear(0x00, 0x00, 0x00, 0x7f);
+    texture.CreateTexture(
+        impl::config::kWindowBaseWidth, impl::config::kWindowBaseHeight);
+    impl::texture::RenderRect src_rect(
+        0, 0, impl::config::kWindowBaseWidth, impl::config::kWindowBaseHeight);
 
-    texture.SetDrawColor(0xff, 0xff, 0xff, 0xff);
-    texture.DrawRect(0, 0, 320, 240);
-    texture.DrawLine(0, 0, 4, 4);
-    texture.DrawLine(10, 5, 200, 220);
-    texture.DrawPoint(317, 3);
-    texture.SetDrawColor(0xff, 0xff, 0x00, 0x4f);
-    texture.FillRect(20, 120, 120, 80);
+    // Entity
+    impl::ebase::PhysicalProperty phys(2.0, 4.0f);
+    impl::ebase::BaseEntity base(phys);
+    float dt = impl::config::GetFrameDuration();
 
-    impl::vector::Vector2D vec(5, 10);
-    impl::vector::Vector2D offset_vec(30, 50);
-    texture.SetDrawColor(0xff, 0x00, 0x00, 0xff);
-    texture.DrawVector(vec, offset_vec);
-
-    impl::texture::RenderRect src1(0, 0, 320, 240);
-    texture.Render(nullptr, src1, 1.5f, 1.4f);
-    impl::texture::RenderRect src2(0, 0, 60, 80, 10, 5);
-    impl::texture::RenderRect dst1(322, 1, 60, 80);
-    texture.Render(nullptr, src2, dst1);
-    impl::texture::RenderRect dst2(350, 100, 60, 80);
-    texture.Render(nullptr, src1, dst2);
-
-    SDL_RenderPresent(renderer);
+    impl::vector::Vector2D g(0.0f, 200.0f);
 
     // Keyboard & mouse
     impl::kbd::Keyboard kbd;
@@ -74,6 +62,36 @@ void DebugRoutine(SDL_Window* window, SDL_Renderer* renderer)
     while (!quits) {
         // Handle events
         quits = impl::revent::HandleEvents(kbd, mouse);
+
+        // DEBUG
+        texture.Clear(0x1f, 0x3f, 0x6f, 0xff);
+
+        impl::vector::Vector2D force;
+        if (kbd.Pressing(impl::kbd::KeyCode::kLeft)) {
+            force += impl::vector::Vector2D(-1.0f, 0.0f);
+        }
+        if (kbd.Pressing(impl::kbd::KeyCode::kRight)) {
+            force += impl::vector::Vector2D(1.0f, 0.0f);
+        }
+        if (kbd.Pressing(impl::kbd::KeyCode::kUp)) {
+            force += impl::vector::Vector2D(0.0f, -1.0f);
+        }
+        if (kbd.Pressing(impl::kbd::KeyCode::kDown)) {
+            force += impl::vector::Vector2D(0.0f, 1.0f);
+        }
+        force *= 500.0f;
+        base.AddForce(force);
+        base.AddForce(base.CalcDrag(1.0f));
+        base.AddForce(base.CalcGravity(g));
+
+        base.UpdateA();
+        base.UpdateV(dt);
+        base.UpdateR(dt);
+
+        base.RenderDebugInfo(texture);
+
+        texture.Render(nullptr, src_rect, 0.0f, 0.0f);
+        SDL_RenderPresent(renderer);
 
         // Keyboard & mouse
         kbd.Update();

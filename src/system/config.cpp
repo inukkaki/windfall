@@ -49,4 +49,9 @@ void SetFrameRate(int frame_rate)
     gFrameRate = frame_rate;
 }
 
+bool EqualsZero(float x)
+{
+    return (-kZeroTolerance < x) && (x < kZeroTolerance);
+}
+
 }  // namespace windfall::system::config

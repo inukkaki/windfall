@@ -10,6 +10,8 @@ add_executable(windfall
     interface/keyboard.cpp
     interface/mouse.cpp
 
+    math/vector.cpp
+
     routine/debug.cpp
     routine/event.cpp
 

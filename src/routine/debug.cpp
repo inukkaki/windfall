@@ -1,10 +1,13 @@
 #include "routine/debug.h"
 
 #include <iostream>
+#include <memory>
 
 #include "SDL2/SDL.h"
 
 #include "entity/base.h"
+#include "entity/delegate.h"
+#include "entity/entity.h"
 #include "graphics/texture.h"
 #include "interface/keyboard.h"
 #include "interface/mouse.h"
@@ -18,6 +21,8 @@ namespace windfall::routine::debug {
 namespace impl {
 
 namespace ebase = windfall::entity::base;
+namespace edlgt = windfall::entity::delegate;
+namespace entity = windfall::entity::entity;
 namespace texture = windfall::graphics::texture;
 namespace kbd = windfall::interface::keyboard;
 namespace mouse = windfall::interface::mouse;
@@ -42,8 +47,9 @@ void DebugRoutine(SDL_Window* window, SDL_Renderer* renderer)
         0, 0, impl::config::kWindowBaseWidth, impl::config::kWindowBaseHeight);
 
     // Entity
-    impl::ebase::PhysicalProperty phys(2.0, 4.0f);
-    impl::ebase::BaseEntity base(phys);
+    impl::entity::Entity player(
+        impl::ebase::PhysicalProperty(2.0, 4.0f),
+        std::make_unique<impl::edlgt::GeneralMotion>());
     float dt = impl::config::GetFrameDuration();
 
     impl::vector::Vector2D g(0.0f, 200.0f);
@@ -80,15 +86,13 @@ void DebugRoutine(SDL_Window* window, SDL_Renderer* renderer)
             force += impl::vector::Vector2D(0.0f, 1.0f);
         }
         force *= 500.0f;
-        base.AddForce(force);
-        base.AddForce(base.CalcDrag(1.0f));
-        base.AddForce(base.CalcGravity(g));
+        player.AddForce(force);
+        player.AddForce(player.CalcDrag(1.0f));
+        player.AddForce(player.CalcGravity(g));
 
-        base.UpdateA();
-        base.UpdateV(dt);
-        base.UpdateR(dt);
+        player.Move(dt);
 
-        base.RenderDebugInfo(texture);
+        player.RenderDebugInfo(texture);
 
         texture.Render(nullptr, src_rect, 0.0f, 0.0f);
         SDL_RenderPresent(renderer);

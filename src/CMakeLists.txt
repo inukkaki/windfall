@@ -6,6 +6,8 @@ add_executable(windfall
     main.cpp
 
     entity/base.cpp
+    entity/delegate.cpp
+    entity/entity.cpp
 
     graphics/texture.cpp
 

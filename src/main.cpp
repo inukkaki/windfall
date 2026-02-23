@@ -1,5 +1,6 @@
 #include "SDL2/SDL.h"
 
+#include "field/tile.h"
 #include "system/launch.h"
 
 #if (defined(__WIN32) || defined(__WIN64))
@@ -11,6 +12,7 @@
 
 namespace impl {
 
+namespace tile = windfall::field::tile;
 namespace launch = windfall::system::launch;
 
 }  // namespace impl
@@ -28,6 +30,8 @@ int main(int argc, char* argv[])
     bool initializes_gui = impl::launch::InitGui(window, renderer);
 
     if (initializes_gui) {
+        impl::tile::SetTileDict();
+
         // DEBUG
         windfall::routine::debug::DebugRoutine(window, renderer);
     }

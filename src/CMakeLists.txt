@@ -9,6 +9,9 @@ add_executable(windfall
     entity/delegate.cpp
     entity/entity.cpp
 
+    field/field.cpp
+    field/tile.cpp
+
     graphics/texture.cpp
 
     interface/keyboard.cpp

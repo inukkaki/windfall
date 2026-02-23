@@ -8,6 +8,7 @@
 #include "entity/base.h"
 #include "entity/delegate.h"
 #include "entity/entity.h"
+#include "field/field.h"
 #include "graphics/texture.h"
 #include "interface/keyboard.h"
 #include "interface/mouse.h"
@@ -23,6 +24,7 @@ namespace impl {
 namespace ebase = windfall::entity::base;
 namespace edlgt = windfall::entity::delegate;
 namespace entity = windfall::entity::entity;
+namespace field = windfall::field::field;
 namespace texture = windfall::graphics::texture;
 namespace kbd = windfall::interface::keyboard;
 namespace mouse = windfall::interface::mouse;
@@ -45,6 +47,9 @@ void DebugRoutine(SDL_Window* window, SDL_Renderer* renderer)
         impl::config::kWindowBaseWidth, impl::config::kWindowBaseHeight);
     impl::texture::RenderRect src_rect(
         0, 0, impl::config::kWindowBaseWidth, impl::config::kWindowBaseHeight);
+
+    // Field
+    impl::field::Field field(25, 16);
 
     // Entity
     impl::entity::Entity player(

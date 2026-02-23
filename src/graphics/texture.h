@@ -18,8 +18,8 @@ namespace vector = windfall::math::vector;
 struct RenderRect {
     int x;
     int y;
-    int w;
-    int h;
+    int w;  // Width
+    int h;  // Height
 
     int offset_x;
     int offset_y;

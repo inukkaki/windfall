@@ -14,9 +14,9 @@ namespace vector = windfall::math::vector;
 }  // namespace impl
 
 struct Positional {
-    impl::vector::Vector2D r;  // px
-    impl::vector::Vector2D v;  // px s-1
-    impl::vector::Vector2D a;  // px s-2
+    impl::vector::Vector2D r;  // Position     / px
+    impl::vector::Vector2D v;  // Velocity     / px s-1
+    impl::vector::Vector2D a;  // Acceleration / px s-2
 
     impl::vector::Vector2D f;  // Sum of external forces / kg px s-2
 

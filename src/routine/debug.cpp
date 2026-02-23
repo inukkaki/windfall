@@ -57,7 +57,17 @@ void DebugRoutine(SDL_Window* window, SDL_Renderer* renderer)
         std::make_unique<impl::edlgt::GeneralMotion>());
     float dt = impl::config::GetFrameDuration();
 
-    impl::vector::Vector2D g(0.0f, 200.0f);
+    player.ModifyR(
+        impl::vector::Vector2D(50.0f, 20.0f),
+        impl::ebase::VectorModificationMode::kAssign);
+    player.ModifyV(
+        impl::vector::Vector2D(100.0f, -200.0f),
+        impl::ebase::VectorModificationMode::kAdd);
+    player.ModifyA(
+        impl::vector::Vector2D(-1000.0f, 2000.0f),
+        impl::ebase::VectorModificationMode::kSubtract);
+
+    impl::vector::Vector2D g(0.0f, 500.0f);
 
     // Keyboard & mouse
     impl::kbd::Keyboard kbd;
@@ -96,6 +106,18 @@ void DebugRoutine(SDL_Window* window, SDL_Renderer* renderer)
         player.AddForce(player.CalcGravity(g));
 
         player.Move(dt);
+
+            // Loop at the edge of the screen
+            impl::vector::Vector2D r = player.pos().r;
+            bool loop_flag = false;
+            if (r.x < 0) { r.x += 480; loop_flag = true; }
+            if (r.y < 0) { r.y += 360; loop_flag = true; }
+            if (r.x > 479) { r.x -= 480; loop_flag = true; }
+            if (r.y > 359) { r.y -= 360; loop_flag = true; }
+            if (loop_flag) {
+                player.ModifyR(
+                    r, impl::ebase::VectorModificationMode::kAssign);
+            }
 
         player.RenderDebugInfo(texture);
 

@@ -1,7 +1,10 @@
 #include "entity/base.h"
 
+#include <string>
+
 #include "graphics/texture.h"
 #include "math/vector.h"
+#include "system/modal.h"
 
 namespace windfall::entity::base {
 
@@ -9,6 +12,7 @@ namespace impl {
 
 namespace texture = windfall::graphics::texture;
 namespace vector = windfall::math::vector;
+namespace modal = windfall::system::modal;
 
 }  // namespace impl
 
@@ -22,6 +26,51 @@ impl::vector::Vector2D BaseEntity::CalcDrag(float fluid_factor) const
 {
     float drag_coeff = phys_.drag_factor*fluid_factor;
     return -drag_coeff*pos_.v;
+}
+
+namespace {
+
+void ModifyVector(
+    impl::vector::Vector2D& lhs, const impl::vector::Vector2D& rhs,
+    VectorModificationMode mode)
+{
+    switch (mode) {
+    case VectorModificationMode::kAdd:
+        lhs += rhs;
+        break;
+    case VectorModificationMode::kSubtract:
+        lhs -= rhs;
+        break;
+    case VectorModificationMode::kAssign:
+        lhs = rhs;
+        break;
+    default:
+        impl::modal::ShowErrorMessage(
+            "BaseEntity Error",
+            "Invalid VectorModificationMode value.",
+            std::to_string(static_cast<int>(mode)).c_str());
+        break;
+    }
+}
+
+}  // namespace
+
+void BaseEntity::ModifyA(
+    const impl::vector::Vector2D& vec, VectorModificationMode mode)
+{
+    ModifyVector(pos_.a, vec, mode);
+}
+
+void BaseEntity::ModifyV(
+    const impl::vector::Vector2D& vec, VectorModificationMode mode)
+{
+    ModifyVector(pos_.v, vec, mode);
+}
+
+void BaseEntity::ModifyR(
+    const impl::vector::Vector2D& vec, VectorModificationMode mode)
+{
+    ModifyVector(pos_.r, vec, mode);
 }
 
 void BaseEntity::AddForce(const impl::vector::Vector2D& force)

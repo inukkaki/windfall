@@ -33,13 +33,28 @@ struct PhysicalProperty {
     PhysicalProperty(const PhysicalProperty&) = default;
 };
 
+enum class VectorModificationMode : unsigned char {
+    kAdd,
+    kSubtract,
+    kAssign,
+};
+
 class BaseEntity {
 public:
     explicit BaseEntity(const PhysicalProperty& phys) : phys_(phys) {}
     virtual ~BaseEntity() = default;
 
+    const Positional& pos() const { return pos_; }
+
     impl::vector::Vector2D CalcGravity(const impl::vector::Vector2D& g) const;
     impl::vector::Vector2D CalcDrag(float fluid_factor) const;
+
+    void ModifyA(
+        const impl::vector::Vector2D& vec, VectorModificationMode mode);
+    void ModifyV(
+        const impl::vector::Vector2D& vec, VectorModificationMode mode);
+    void ModifyR(
+        const impl::vector::Vector2D& vec, VectorModificationMode mode);
 
     void AddForce(const impl::vector::Vector2D& force);
 

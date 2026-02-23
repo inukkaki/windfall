@@ -21,6 +21,12 @@ int GetWindowHeight();
 int GetFrameRate();
 void SetFrameRate(int frame_rate);
 
+float GetFrameDuration();
+
+inline constexpr float kZeroTolerance = 1e-6f;
+
+bool EqualsZero(float x);
+
 }  // namespace windfall::system::config
 
 #endif  // WINDFALL_SYSTEM_CONFIG_H_

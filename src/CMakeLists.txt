@@ -5,8 +5,16 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})
 add_executable(windfall
     main.cpp
 
+    entity/base.cpp
+    entity/delegate.cpp
+    entity/entity.cpp
+
+    graphics/texture.cpp
+
     interface/keyboard.cpp
     interface/mouse.cpp
+
+    math/vector.cpp
 
     routine/debug.cpp
     routine/event.cpp

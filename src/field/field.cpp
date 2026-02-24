@@ -27,6 +27,20 @@ void Field::InitArray(int width, int height)
     }
 }
 
+void Field::Load()
+{
+    // DEBUG
+    InitArray(25, 16);
+    collision_tiles_[0][0] = impl::tile::TileId::kUnknown;
+    collision_tiles_[0][24] = impl::tile::TileId::kUnknown;
+    collision_tiles_[15][24] = impl::tile::TileId::kUnknown;
+    for (int i = 10; i < 14; ++i) {
+        for (int j = 5; j < 20; ++j) {
+            collision_tiles_[i][j] = impl::tile::TileId::kBlock;
+        }
+    }
+}
+
 const impl::tile::Tile& Field::GetCollisionTile(int row, int col) const
 {
     impl::tile::TileId tile_id = impl::tile::TileId::kUnknown;

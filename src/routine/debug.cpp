@@ -9,6 +9,7 @@
 #include "entity/delegate.h"
 #include "entity/entity.h"
 #include "field/field.h"
+#include "field/tile.h"
 #include "graphics/texture.h"
 #include "interface/keyboard.h"
 #include "interface/mouse.h"
@@ -25,6 +26,7 @@ namespace ebase = windfall::entity::base;
 namespace edlgt = windfall::entity::delegate;
 namespace entity = windfall::entity::entity;
 namespace field = windfall::field::field;
+namespace tile = windfall::field::tile;
 namespace texture = windfall::graphics::texture;
 namespace kbd = windfall::interface::keyboard;
 namespace mouse = windfall::interface::mouse;
@@ -50,6 +52,17 @@ void DebugRoutine(SDL_Window* window, SDL_Renderer* renderer)
 
     // Field
     impl::field::Field field(25, 16);
+    field.Load();
+
+    impl::texture::Texture field_texture(renderer);
+    field_texture.CreateTexture(
+        impl::config::kWindowBaseWidth, impl::config::kWindowBaseHeight);
+    field_texture.Clear(0x20, 0x40, 0x70, 0xff);
+    for (int i = 0; i < 16; ++i) {
+        for (int j = 0; j < 25; ++j) {
+            field.GetCollisionTile(i, j).RenderDebugInfo(field_texture, i, j);
+        }
+    }
 
     // Entity
     impl::entity::Entity player(
@@ -60,12 +73,6 @@ void DebugRoutine(SDL_Window* window, SDL_Renderer* renderer)
     player.ModifyR(
         impl::vector::Vector2D(50.0f, 20.0f),
         impl::ebase::VectorModificationMode::kAssign);
-    player.ModifyV(
-        impl::vector::Vector2D(100.0f, -200.0f),
-        impl::ebase::VectorModificationMode::kAdd);
-    player.ModifyA(
-        impl::vector::Vector2D(-1000.0f, 2000.0f),
-        impl::ebase::VectorModificationMode::kSubtract);
 
     impl::vector::Vector2D g(0.0f, 500.0f);
 
@@ -85,7 +92,7 @@ void DebugRoutine(SDL_Window* window, SDL_Renderer* renderer)
         quits = impl::revent::HandleEvents(kbd, mouse);
 
         // DEBUG
-        texture.Clear(0x1f, 0x3f, 0x6f, 0xff);
+        texture.Clear(0x1f, 0x3f, 0x6f, 0x00);
 
         impl::vector::Vector2D force;
         if (kbd.Pressing(impl::kbd::KeyCode::kLeft)) {
@@ -121,6 +128,7 @@ void DebugRoutine(SDL_Window* window, SDL_Renderer* renderer)
 
         player.RenderDebugInfo(texture);
 
+        field_texture.Render(nullptr, src_rect, 0.0f, 0.0f);
         texture.Render(nullptr, src_rect, 0.0f, 0.0f);
         SDL_RenderPresent(renderer);
 

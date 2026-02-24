@@ -27,6 +27,7 @@ public:
     int h() const { return h_; }
 
     void InitArray(int width, int height);
+    void Load();  // TODO: Load the field data from external files.
 
     const impl::tile::Tile& GetCollisionTile(int row, int col) const;
 

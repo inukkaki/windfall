@@ -9,6 +9,10 @@
 namespace windfall::interface::keyboard {
 
 enum class KeyCode : unsigned char {
+    kW,
+    kA,
+    kS,
+    kD,
     kUp,
     kLeft,
     kRight,

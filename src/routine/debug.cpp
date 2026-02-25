@@ -58,17 +58,27 @@ void DebugRoutine(SDL_Window* window, SDL_Renderer* renderer)
     field_texture.CreateTexture(
         impl::config::kWindowBaseWidth, impl::config::kWindowBaseHeight);
     field_texture.Clear(0x20, 0x40, 0x70, 0xff);
-    for (int i = 0; i < 16; ++i) {
-        for (int j = 0; j < 25; ++j) {
+    for (int i = 0; i < field.h(); ++i) {
+        for (int j = 0; j < field.w(); ++j) {
             field.GetCollisionTile(i, j).RenderDebugInfo(field_texture, i, j);
         }
     }
 
+    impl::field::InitReferenceCountArray(field.w(), field.h());
+
+    impl::texture::Texture ref_texture(renderer);
+    ref_texture.CreateTexture(
+        impl::config::kWindowBaseWidth, impl::config::kWindowBaseHeight);
+
     // Entity
+    impl::ebase::Positional pos;
+    pos.collision.w = 39;
+    pos.collision.h = 20;
+    impl::ebase::PhysicalProperty phys;
+    phys.mass = 2.0f;
+    phys.drag_factor = 4.0f;
     impl::entity::Entity player(
-        impl::ebase::PhysicalProperty(2.0, 4.0f),
-        std::make_unique<impl::edlgt::GeneralMotion>());
-    float dt = impl::config::GetFrameDuration();
+        pos, phys, std::make_unique<impl::edlgt::GeneralMotion>());
 
     player.ModifyR(
         impl::vector::Vector2D(50.0f, 20.0f),
@@ -76,11 +86,16 @@ void DebugRoutine(SDL_Window* window, SDL_Renderer* renderer)
 
     impl::vector::Vector2D g(0.0f, 500.0f);
 
+    impl::vector::Vector2D r(100.0f, 50.0f);
+
     // Keyboard & mouse
     impl::kbd::Keyboard kbd;
     impl::mouse::Mouse mouse;
 
     // Frame rate
+    //impl::config::SetFrameRate(30);
+    float dt = impl::config::GetFrameDuration();
+
     impl::framerate::FrameRateAdjuster fra(impl::config::GetFrameRate());
     impl::framerate::FrameRateMeasurer frm;
     double measured_frame_rate = 0.0;
@@ -93,6 +108,26 @@ void DebugRoutine(SDL_Window* window, SDL_Renderer* renderer)
 
         // DEBUG
         texture.Clear(0x1f, 0x3f, 0x6f, 0x00);
+
+            // Reference count (field)
+            ref_texture.Clear(0x00, 0x00, 0x00, 0x00);
+            for (int i = 0; i < field.h(); ++i) {
+                for (int j = 0; j < field.w(); ++j) {
+                    if (impl::field::GetReferenceCount(i, j) > 0) {
+                        ref_texture.SetDrawColor(0xff, 0x00, 0xff, 0x3f);
+                        ref_texture.FillRect(
+                            impl::tile::kTileWidth*j,
+                            impl::tile::kTileHeight*i,
+                            impl::tile::kTileWidth, impl::tile::kTileHeight);
+                        ref_texture.SetDrawColor(0xff, 0x00, 0xff, 0x7f);
+                        ref_texture.DrawRect(
+                            impl::tile::kTileWidth*j,
+                            impl::tile::kTileHeight*i,
+                            impl::tile::kTileWidth, impl::tile::kTileHeight);
+                        impl::field::ResetReferenceCount(i, j);
+                    }
+                }
+            }
 
         impl::vector::Vector2D force;
         if (kbd.Pressing(impl::kbd::KeyCode::kLeft)) {
@@ -107,12 +142,19 @@ void DebugRoutine(SDL_Window* window, SDL_Renderer* renderer)
         if (kbd.Pressing(impl::kbd::KeyCode::kDown)) {
             force += impl::vector::Vector2D(0.0f, 1.0f);
         }
-        force *= 500.0f;
+        force *= 2500.0f;
         player.AddForce(force);
-        player.AddForce(player.CalcDrag(1.0f));
-        player.AddForce(player.CalcGravity(g));
+        //player.AddForce(player.CalcDrag(1.0f));
+        //player.AddForce(player.CalcGravity(g));
 
         player.Move(dt);
+        impl::vector::Vector2D delta_r;
+        if (kbd.Pressing(impl::kbd::KeyCode::kW)) { delta_r.y -= 1.0f; }
+        if (kbd.Pressing(impl::kbd::KeyCode::kA)) { delta_r.x -= 1.0f; }
+        if (kbd.Pressing(impl::kbd::KeyCode::kS)) { delta_r.y += 1.0f; }
+        if (kbd.Pressing(impl::kbd::KeyCode::kD)) { delta_r.x += 1.0f; }
+        r += delta_r;
+        player.ModifyR(r, impl::ebase::VectorModificationMode::kAssign);
 
             // Loop at the edge of the screen
             impl::vector::Vector2D r = player.pos().r;
@@ -129,6 +171,7 @@ void DebugRoutine(SDL_Window* window, SDL_Renderer* renderer)
         player.RenderDebugInfo(texture);
 
         field_texture.Render(nullptr, src_rect, 0.0f, 0.0f);
+        ref_texture.Render(nullptr, src_rect, 0.0f, 0.0f);
         texture.Render(nullptr, src_rect, 0.0f, 0.0f);
         SDL_RenderPresent(renderer);
 

@@ -13,6 +13,20 @@ namespace vector = windfall::math::vector;
 
 }  // namespace impl
 
+struct EntityCollision {
+    float w;  // Width  / px
+    float h;  // Height / px
+
+    EntityCollision() = default;
+
+    impl::vector::Vector2D Center() const;
+
+    impl::vector::Vector2D VertexTopLeft() const;
+    impl::vector::Vector2D VertexTopRight() const;
+    impl::vector::Vector2D VertexBottomLeft() const;
+    impl::vector::Vector2D VertexBottomRight() const;
+};
+
 struct Positional {
     impl::vector::Vector2D r;  // Position     / px
     impl::vector::Vector2D v;  // Velocity     / px s-1
@@ -20,7 +34,10 @@ struct Positional {
 
     impl::vector::Vector2D f;  // Sum of external forces / kg px s-2
 
+    EntityCollision collision;
+
     Positional() = default;
+    Positional(const Positional&) = default;
 };
 
 struct PhysicalProperty {
@@ -28,8 +45,6 @@ struct PhysicalProperty {
     float drag_factor;
 
     PhysicalProperty() = default;
-    PhysicalProperty(float mass, float drag_factor)
-        : mass(mass), drag_factor(drag_factor) {}
     PhysicalProperty(const PhysicalProperty&) = default;
 };
 
@@ -41,7 +56,8 @@ enum class VectorModificationMode : unsigned char {
 
 class BaseEntity {
 public:
-    explicit BaseEntity(const PhysicalProperty& phys) : phys_(phys) {}
+    BaseEntity(const Positional& pos, const PhysicalProperty& phys)
+        : pos_(pos), phys_(phys) {}
     virtual ~BaseEntity() = default;
 
     const Positional& pos() const { return pos_; }

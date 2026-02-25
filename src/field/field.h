@@ -29,6 +29,8 @@ public:
     void InitArray(int width, int height);
     void Load();  // TODO: Load the field data from external files.
 
+    bool Within(int row, int col) const;
+
     const impl::tile::Tile& GetCollisionTile(int row, int col) const;
 
 private:
@@ -37,6 +39,12 @@ private:
 
     TileIdArray collision_tiles_;
 };
+
+void InitReferenceCountArray(int width, int height);
+
+int GetReferenceCount(int row, int col);
+void IncrementReferenceCount(int row, int col);
+void ResetReferenceCount(int row, int col);
 
 }  // namespace windfall::field::field
 

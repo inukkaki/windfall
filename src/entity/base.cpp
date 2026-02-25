@@ -16,6 +16,31 @@ namespace modal = windfall::system::modal;
 
 }  // namespace impl
 
+impl::vector::Vector2D EntityCollision::Center() const
+{
+    return impl::vector::Vector2D(w, h)/2;
+}
+
+impl::vector::Vector2D EntityCollision::VertexTopLeft() const
+{
+    return impl::vector::Vector2D();
+}
+
+impl::vector::Vector2D EntityCollision::VertexTopRight() const
+{
+    return impl::vector::Vector2D(w - 1.0f, 0.0f);
+}
+
+impl::vector::Vector2D EntityCollision::VertexBottomLeft() const
+{
+    return impl::vector::Vector2D(0.0f, h - 1.0f);
+}
+
+impl::vector::Vector2D EntityCollision::VertexBottomRight() const
+{
+    return impl::vector::Vector2D(w - 1.0f, h - 1.0f);
+}
+
 impl::vector::Vector2D BaseEntity::CalcGravity(
     const impl::vector::Vector2D& g) const
 {
@@ -97,8 +122,23 @@ void BaseEntity::UpdateR(float dt)
 namespace {
 
 constexpr int kRenderEntityRSize = 8;
-constexpr float kRenderEntityVSize = 8.0f/60;
+constexpr float kRenderEntityVSize = 1.0f/60;
 constexpr float kRenderEntityASize = 8.0f/60;
+
+void RenderEntityCollision(
+    const impl::texture::Texture& target, const Positional& pos)
+{
+    target.SetDrawColor(0x9f, 0x9f, 0x9f, 0x9f);
+    target.DrawRect(pos.r.x, pos.r.y, pos.collision.w, pos.collision.h);
+    //target.DrawVector(
+    //    kRenderEntityVSize*pos.v, pos.r + pos.collision.VertexTopLeft());
+    //target.DrawVector(
+    //    kRenderEntityVSize*pos.v, pos.r + pos.collision.VertexTopRight());
+    target.DrawVector(
+        kRenderEntityVSize*pos.v, pos.r + pos.collision.VertexBottomLeft());
+    target.DrawVector(
+        kRenderEntityVSize*pos.v, pos.r + pos.collision.VertexBottomRight());
+}
 
 void RenderEntityR(const impl::texture::Texture& target, const Positional& pos)
 {
@@ -114,19 +154,22 @@ void RenderEntityR(const impl::texture::Texture& target, const Positional& pos)
 void RenderEntityV(const impl::texture::Texture& target, const Positional& pos)
 {
     target.SetDrawColor(0xff, 0xff, 0x00, 0xff);
-    target.DrawVector(kRenderEntityVSize*pos.v, pos.r);
+    target.DrawVector(
+        kRenderEntityVSize*pos.v, pos.r + pos.collision.Center());
 }
 
 void RenderEntityA(const impl::texture::Texture& target, const Positional& pos)
 {
     target.SetDrawColor(0xff, 0x00, 0x00, 0xff);
-    target.DrawVector(kRenderEntityASize*pos.a, pos.r);
+    target.DrawVector(
+        kRenderEntityASize*pos.a, pos.r + pos.collision.Center());
 }
 
 }  // namespace
 
 void BaseEntity::RenderDebugInfo(const impl::texture::Texture& target) const
 {
+    RenderEntityCollision(target, pos_);
     RenderEntityR(target, pos_);
     RenderEntityV(target, pos_);
     RenderEntityA(target, pos_);

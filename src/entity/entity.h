@@ -18,9 +18,10 @@ namespace edlgt = windfall::entity::delegate;
 
 class Entity : public impl::ebase::BaseEntity {
 public:
-    Entity(const impl::ebase::PhysicalProperty& phys,
+    Entity(const impl::ebase::Positional& pos,
+           const impl::ebase::PhysicalProperty& phys,
            std::unique_ptr<impl::edlgt::MoveDelegate>&& move)
-        : BaseEntity(phys), move_(std::move(move))
+        : BaseEntity(pos, phys), move_(std::move(move))
     {
         INUK_ASSERT(move_);
     }

@@ -18,8 +18,8 @@ namespace vector = windfall::math::vector;
 struct RenderRect {
     int x;
     int y;
-    int w;
-    int h;
+    int w;  // Width
+    int h;  // Height
 
     int offset_x;
     int offset_y;
@@ -34,7 +34,6 @@ class Texture {
 public:
     explicit Texture(SDL_Renderer* renderer)
         : renderer_(renderer), texture_(nullptr), w_(0), h_(0) {}
-
     ~Texture() { FreeTexture(); }
 
     bool CreateTexture(int width, int height);
